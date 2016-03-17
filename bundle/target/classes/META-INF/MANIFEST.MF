@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1458192341494
+Build-Jdk: 1.8.0_74
+Built-By: cat
+Bundle-Description: com.yujingnet.osp - bundle
+Bundle-ManifestVersion: 2
+Bundle-Name: bundle
+Bundle-SymbolicName: com.yujingnet.osp.bundle
+Bundle-Version: 0.0.1.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Export-Package: com.yujingnet.osp.bundle;version="0.0.1";uses:="org.osgi
+ .service.component"
+Import-Package: org.osgi.framework;version="[1.5,2)",org.osgi.service.co
+ mponent;version="[1.1,2)",org.slf4j;version="[1.7,2)"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+Service-Component: OSGI-INF/com.yujingnet.osp.bundle.SimpleDSComponent.x
+ ml
+Tool: Bnd-3.0.0.201509101326
