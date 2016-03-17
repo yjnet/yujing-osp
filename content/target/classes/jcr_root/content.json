@@ -3,7 +3,7 @@
         "jcr:primaryType": "yj:page",
         "sling:resourceType" : "nateyolles/pages/adminPage",
         "par" : {
-            "jcr:primaryType": "nt:unstructured",
+            "jcr:primaryType": "yj:content",
             "sling:resourceType" : "nateyolles/components/parsys"
         }
     }

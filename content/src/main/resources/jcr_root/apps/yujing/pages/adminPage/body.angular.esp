@@ -1,0 +1,51 @@
+<body ng-app="sem">
+
+  
+  <section ng-controller="SidekickController as sidekick">
+    <ul ng-repeat="component in sidekick.components">
+      <li>{{component.name}}</li>
+    </ul>
+  </section>
+
+  <section ng-controller="treeCtrl">
+<!-- Nested node template -->
+        <script type="text/ng-template" id="nodes_renderer.html">
+          <div ui-tree-handle class="tree-node tree-node-content">
+            <a class="btn btn-success btn-xs" ng-if="node.nodes && node.nodes.length > 0" nodrag ng-click="toggle(this)"><span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span></a>
+            {{node.title}}
+            <a class="pull-right btn btn-danger btn-xs" nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
+            <a class="pull-right btn btn-primary btn-xs" nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>
+          </div>
+          <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+            <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+            </li>
+          </ol>
+        </script>
+        <div ui-tree id="tree-root">
+          <ol ui-tree-nodes ng-model="data">
+            <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+          </ol>
+        </div>
+      </div>
+  </section>
+
+  <p>This is a page with one embedded parsys.</p>
+
+
+  <% sling.include(currentNode.getPath() + "/par"); %>
+
+  <% sling.include(currentNode.getPath(), "replaceSelectors=footer"); %>
+
+  <link rel="stylesheet" href="/etc/widgets/components/jquery-ui.css" />
+  <link rel="stylesheet" href="/etc/widgets/components/sidekick.css" />
+  <link rel="stylesheet" href="/etc/widgets/components/parsys.css" />
+  <link rel="stylesheet" href="/etc/widgets/components/angular-ui-tree.css" />
+  <link rel="stylesheet" href="/etc/widgets/components/bootstrap.min.css" />
+  <script src="/etc/widgets/components/jquery-2.1.3.min.js"></script>
+  <script src="/etc/widgets/components/jquery-ui.min.js"></script>
+  <script src="/etc/widgets/components/angular.min.js"></script>
+  <script src="/etc/widgets/components/angular-ui-tree.js"></script>
+  <script src="/etc/widgets/components/parsys.js"></script>
+  <script src="/etc/widgets/components/sidekick.js"></script>
+  <script src="/etc/widgets/components/app.js"></script>
+</body>

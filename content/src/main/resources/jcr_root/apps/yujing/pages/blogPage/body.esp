@@ -1,0 +1,5 @@
+<body>
+  BLOG: <h1><%= currentNode.testProperty %></h1>
+
+  <% sling.include(currentNode.getPath(), "replaceSelectors=footer"); %>
+</body>

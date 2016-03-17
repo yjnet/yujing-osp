@@ -26,7 +26,14 @@
 //
 
 <yj = 'http://osp.yujingnet.com/yj'>
-
-[yj:page] > nt:unstructured
+[yj:content] > nt:unstructured
+	- title (string)
+	- description (string)
+	
+[yj:page] > yj:content, nt:unstructured
+	- title (string)
+	- description (string)
+	
+[yj:component] > yj:content, nt:unstructured
 	- title (string)
 	- description (string)

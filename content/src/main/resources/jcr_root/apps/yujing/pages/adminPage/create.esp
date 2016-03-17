@@ -1,0 +1,43 @@
+<body>
+  Admin page: <h1><%= currentNode.testProperty %></h1>
+
+<script src="/etc/widgets/tinymce/js/tinymce/tinymce.min.js"></script>
+<script>tinymce.init({selector:'textarea'});</script>
+
+
+    Create:
+
+    <form method="post" action="/bin/createblogpost">
+
+      <label>
+      Year: <select name="year">
+              <% for (var i=2010; i <= 2025; i++) { %>
+                <option<%= new Date().getFullYear() === i ? " selected" : ""%>><%= i %></option>
+              <% } %>
+            </select>
+      </label>
+
+      <label>
+      Month: <select name="month">
+              <% for (var i=1; i <= 31; i++) { %>
+                <option<%= new Date().getMonth() + 1 === i ? " selected" : ""%>><%= i %></option>
+              <% } %>
+            </select>
+      </label>
+
+      <label>
+      Title: <input type="text" name="title">
+      </label>
+
+      <textarea name="text"></textarea>
+
+      <input type="hidden" name="year@TypeHint" value="Long">
+      <input type="hidden" name="month@TypeHint" value="Long">
+
+      <input type="submit">
+    </form>
+
+
+
+  <% sling.include(currentNode.getPath(), "replaceSelectors=footer"); %>
+</body>

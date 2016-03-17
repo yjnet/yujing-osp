@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1458192341494
+Bnd-LastModified: 1458195137982
 Build-Jdk: 1.8.0_74
 Built-By: cat
 Bundle-Description: com.yujingnet.osp - bundle
