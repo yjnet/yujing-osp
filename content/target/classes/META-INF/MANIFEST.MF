@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1458195115743
-Build-Jdk: 1.8.0_74
-Built-By: cat
+Bnd-LastModified: 1458286792338
+Build-Jdk: 1.7.0_51
+Built-By: yzhang15
 Bundle-Description: com.yujingnet.osp - content
 Bundle-ManifestVersion: 2
 Bundle-Name: content

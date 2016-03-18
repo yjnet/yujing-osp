@@ -1,1 +1,4 @@
+com\yujingnet\osp\bundle\util\BundleConstant.class
 com\yujingnet\osp\bundle\SimpleDSComponent.class
+com\yujingnet\osp\bundle\servlet\ParsysServlet.class
+com\yujingnet\osp\bundle\util\SlingUtil.class
