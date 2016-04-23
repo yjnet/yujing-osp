@@ -6,5 +6,32 @@
             "jcr:primaryType": "nt:unstructured",
             "sling:resourceType" : "yujing/components/parsys"
         }
+    },
+    "index" : {
+        "jcr:primaryType": "yj:page",
+        "sling:resourceType" : "foundation/siteadmin",
+        "title" : "index siteadmin title"
+    },
+    "demo" : {
+        "jcr:primaryType": "yj:page",
+        "sling:resourceType" : "foundation/components/demo",
+        "sling:resourceSuperType" : "foundation/components/demoSuper",
+        "yj:template" : "foundation/demoTemplate",
+        "title" : "demo foundation/demo -- sling:resourceSuperType=foundation/demoSuper"
+    },
+    "demo-super-demo" : {
+        "jcr:primaryType": "yj:page",
+        "sling:resourceType" : "foundation/demoSuper",
+        "title" : "demo foundation/demo -- sling:resourceSuperType=foundation/demoSuper"
+    },
+    "demo-template-demo" : {
+        "jcr:primaryType": "yj:template",
+        "sling:resourceType" : "foundation/demoTemplate",
+        "title" : "demo foundation/demo -- sling:resourceSuperType=foundation/demoSuper"
+    },
+    "lang-test" : {
+        "jcr:primaryType": "yj:page",
+        "sling:resourceType" : "foundation/language",
+        "title" : "test language li18n mapping"
     }
 }

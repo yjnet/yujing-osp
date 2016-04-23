@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<taglib xmlns="http://java.sun.com/xml/ns/javaee" version="2.1">
+  <tlib-version>1.0</tlib-version>
+  <short-name>Yujing TLD</short-name>
+  <uri>http://yujingnet.com/osp/yj</uri>
+  <tag>
+    <name>node-search</name>
+    <tag-class>com.yujingnet.osp.bundle.bean.ResouceSearchTag</tag-class>
+    <body-content>empty</body-content>
+  </tag>
+</taglib>

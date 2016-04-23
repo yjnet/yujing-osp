@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1458286792338
-Build-Jdk: 1.7.0_51
+Bnd-LastModified: 1461380665228
+Build-Jdk: 1.8.0_60
 Built-By: yzhang15
 Bundle-Description: com.yujingnet.osp - content
 Bundle-ManifestVersion: 2
-Bundle-Name: content
-Bundle-SymbolicName: com.yujingnet.osp.content
+Bundle-Name: yujing-osp content
+Bundle-SymbolicName: com.yujingnet.osp.yujing-osp-content
 Bundle-Version: 0.0.1.SNAPSHOT
 Created-By: Apache Maven Bundle Plugin
 Sling-Initial-Content: jcr_root;overwrite:=true;uninstall:=true

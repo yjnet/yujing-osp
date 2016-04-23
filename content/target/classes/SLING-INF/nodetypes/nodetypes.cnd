@@ -37,6 +37,7 @@
 [yj:pageContent] > nt:unstructured
 	- title (string)
 
-[yj:component] > nt:unstructured
+[yj:component] > sling:OrderedFolder
 	- title (string)
 	- description (string)
+	

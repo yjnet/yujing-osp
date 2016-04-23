@@ -1,0 +1,45 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	attributeFormDefault="unqualified" elementFormDefault="qualified"
+	version="1.0">
+	<xsd:element name="div" type="div" />
+	<xsd:element name="ul" type="ul" />
+	<xsd:complexType name="div">
+		<xsd:complexContent>
+			<xsd:extension base="ul">
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="div" type="div" />
+					<xsd:element name="ul" type="ul" />
+					<xsd:element name="span" type="span" maxOccurs="1" minOccurs="1" />
+				</xsd:choice>
+				<xsd:attribute name="query-statement" type="xsd:string" use="optional" />
+				<xsd:attribute name="node-number" type="xsd:long" use="optional" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="ul">
+		<xsd:choice maxOccurs="unbounded">
+			<xsd:element name="li" maxOccurs="unbounded" type="li" />
+		</xsd:choice>
+		<xsd:attribute name="id" type="xsd:string" use="optional" />
+		<xsd:attribute name="class" type="xsd:string" use="optional" />
+		<xsd:attribute name="name" type="xsd:string" use="optional" />
+		<xsd:attribute name="style" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="li">
+		<xsd:choice maxOccurs="unbounded">
+			<xsd:element name="span" type="span" maxOccurs="1" minOccurs="1" />
+			<xsd:element name="ul" type="ul" />
+		</xsd:choice>
+		<xsd:attribute name="id" type="xsd:string" use="optional" />
+		<xsd:attribute name="class" type="xsd:string" use="optional" />
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="style" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="span">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="class" type="xsd:string" />
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+</xsd:schema>
