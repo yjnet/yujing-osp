@@ -18,7 +18,7 @@ public class ContentNodeType {
     public static final String NT_UNSTRUCTURED = "nt:unstructured";
 
     public static boolean isFileType(String type) {
-    	return YJ_PAGE.equals(type) || NT_FILE.equals(type);
+    	return YJ_PAGE.equals(type) || NT_FILE.equals(type) || YJ_TEMPLATE.equals(type);
     }
     
     public static boolean isFolderType(String type) {

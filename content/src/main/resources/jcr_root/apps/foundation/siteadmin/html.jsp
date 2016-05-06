@@ -28,20 +28,21 @@
 			<script src="/etc/clientlibs/common/js/jquery-2.1.1.min.js"></script>
 			<script src="/etc/clientlibs/common/js/bootstrap-3.3.1.min.js"></script>
 			<script>
-			$("#loginModal").on('shown.bs.modal', function() {
-				$('#login-form #j_username').focus();
+			var $login = jQuery.noConflict();
+			$login("#loginModal").on('shown.bs.modal', function() {
+				$login('#login-form #j_username').focus();
 			});
-			$('#login-form').on('submit', function(event) {
+			$login('#login-form').on('submit', function(event) {
 				event.preventDefault();
-				$.post('/j_security_check', $(this).serialize(), function(data) {
-					$('#login-form .alert').addClass('hide');
+				$login.post('/j_security_check', $login(this).serialize(), function(data) {
+					$login('#login-form .alert').addClass('hide');
 					window.location.reload(true);
 				}).fail(function() {
-					$('#login-form .alert').removeClass('hide').fadeOut(500).fadeIn(1000);
+					$login('#login-form .alert').removeClass('hide').fadeOut(500).fadeIn(1000);
 					
 				})
 			});
-			$('#loginModal').modal('show');
+			$login('#loginModal').modal('show');
 			</script>
 		</body>
 	</c:otherwise>

@@ -33,7 +33,6 @@ import org.apache.sling.jcr.api.SlingRepository;
 import com.yujingnet.osp.bundle.util.ContentNodeName;
 import com.yujingnet.osp.bundle.util.ContentNodePropertyName;
 import com.yujingnet.osp.bundle.util.ContentNodeType;
-import com.yujingnet.osp.bundle.util.SlingUtil;
 
 @Component(metatype = true)
 @Service(Servlet.class)
@@ -106,7 +105,7 @@ public class ParsysServlet extends SlingSafeMethodsServlet {
 		Session session = null;
 		try {
 			Date date = new Date();
-			session =  SlingUtil.loginAdministrative(this.repository);
+			session =  repository.loginAdministrative(null);
 			if (session == null)
 				throw new RuntimeException("Cannot login to SlingHttpServlet session");
 			

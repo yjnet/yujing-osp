@@ -14,10 +14,25 @@
     },
     "demo" : {
         "jcr:primaryType": "yj:page",
-        "sling:resourceType" : "foundation/components/demo",
-        "sling:resourceSuperType" : "foundation/components/demoSuper",
-        "yj:template" : "foundation/demoTemplate",
-        "title" : "demo foundation/demo -- sling:resourceSuperType=foundation/demoSuper"
+        "jcr:content": {
+        		"jcr:primaryType": "yj:pageContent",
+        		"jcr:created": "2016-05-03T00:10:47.123-05:00",
+        		"sling:resourceType": "foundation/components/page/defaul-template",
+        		"title" : "demo foundation/demo -- sling:resourceSuperType=foundation/demoSuper",
+        		"maincontent": {
+        				"jcr:primaryType": "nt:unstructured",
+        				"sling:resourceType": "yujing/components/parsys",
+        				"image": {
+		        				"jcr:primaryType": "nt:unstructured",
+		        				"sling:resourceType": "yujing/components/image"
+        				},
+        				"image_1": {
+		        				"jcr:primaryType": "nt:unstructured",
+		        				"sling:resourceType": "yujing/components/image"
+        				}
+        		}
+        		
+        }
     },
     "demo-super-demo" : {
         "jcr:primaryType": "yj:page",
@@ -26,7 +41,7 @@
     },
     "demo-template-demo" : {
         "jcr:primaryType": "yj:template",
-        "sling:resourceType" : "foundation/demoTemplate",
+        "sling:resourceType" : "foundation",
         "title" : "demo foundation/demo -- sling:resourceSuperType=foundation/demoSuper"
     },
     "lang-test" : {

@@ -82,8 +82,11 @@
 	  //  = "SELECT * FROM yj:page";
 	 //   = "/jcr:root//*[jcr:contains(., 's')] order by @jcr:score";
 	 //   = "/jcr:root/content//* order by jcr:path";
-	      = "/jcr:root/etc//element(*, nt:file) order by jcr:path ";
-	    
+	  //    = "/jcr:root/etc//*[ jcr:primaryType = 'sling:Folder' or jcr:primaryType = 'nt:file'] order by jcr:path ";
+	  //    = "/jcr:root/etc//element[(*, nt:file)] order by jcr:path ";
+	  = "/jcr:root//* order by jcr:path ";
+	      
+
 	    javax.jcr.query.Query query 
 	    = queryManager.createQuery(queryStatement, javax.jcr.query.Query.XPATH);
 	   // = queryManager.createQuery(queryStatement, javax.jcr.query.Query.SQL);
@@ -91,6 +94,7 @@
 	    // iterate over results
 	    javax.jcr.query.QueryResult result = query.execute();
 	    javax.jcr.NodeIterator nodes = result.getNodes();
+	   
 	    StringBuilder output = new StringBuilder();
 	    
 	    String currentPath = "";

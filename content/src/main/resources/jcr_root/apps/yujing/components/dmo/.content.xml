@@ -2,4 +2,8 @@
 <jcr:root 
     xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    allowedParents="*/parsys"
+    componentGroup="General"
+    jcr:title="demo"
+    yj:primaryType="yj:component"
     jcr:primaryType="yj:component"/>

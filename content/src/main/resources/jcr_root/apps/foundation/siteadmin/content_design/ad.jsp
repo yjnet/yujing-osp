@@ -1,1 +1,1 @@
-<div class="header">Advertiser page</div>
+<div class="yj-body-main-item">Advertiser page</div>

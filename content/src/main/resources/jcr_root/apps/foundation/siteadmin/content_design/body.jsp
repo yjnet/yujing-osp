@@ -8,7 +8,7 @@
 }
 
 .yj-body-header {
-	height: 50px;
+	height: auto;
 }
 
 
@@ -33,19 +33,17 @@ div.yj-flex-container {
 div.yj-flex-item {
     background-color: cornflowerblue;
     overflow-x: auto;
-    margin: 2px;
-    line-height:1in;
+    line-height: 30px;
 }
 
 .yj-menu-item {
-	width: 250px;
+	width: 280px;
 	white-space: nowrap;
 	overflow-x: auto;
 	float:left;
 	resize: horizontal;
     overflow: auto;
     
-    cursor: move;
     position: relative;
     
 }
@@ -56,10 +54,19 @@ div.yj-flex-item {
 .yj-info-item {
 	max-width: 100px;
 	float: right;
+    margin-left: 2px;
 }
 
 .yj-body-footer {
 	height: 80px;
+}
+
+.yj-dragbar{
+   background-color: lightgrey;
+   height:100%;
+   float: left;
+   width: 3px;
+   cursor: col-resize;
 }
 </style>
 
@@ -68,42 +75,50 @@ div.yj-flex-item {
 <div class="yj-body">
 	<div class="yj-body-header">
 		<sling:include replaceSelectors="content_design.header" />
+		<div style="clear: both;"></div>
 	</div>
 	<div id='test'></div>
-	
+	<div>
+		<sling:include replaceSelectors="content_design.actionButtons" />
+		<div style="clear: both;"></div>
+	</div>
 	<div class="yj-flex-container yj-body-content">
 		<div class="yj-flex-item yj-menu-item">
-		
-			sling:include replaceSelectors="content_design.navTab" 
+			<sling:include replaceSelectors="content_design.navTab" />
+			<div style="clear: both;"></div>
 		</div>
+		
 		<div class="yj-flex-item yj-content-item">
-			main
+			<sling:include replaceSelectors="content_design.content" />
+			<div style="clear: both;"></div>
 		</div>
 		<div class="yj-flex-item yj-info-item">
-			info
+			<sling:include replaceSelectors="content_design.ad" />
+			<div style="clear: both;"></div>
 		</div>
 	</div>
 	
 	<div class="yj-body-footer">
 		<sling:include replaceSelectors="content_design.footer" />
+		<div style="clear: both;"></div>
 	</div>
 </div>
 
 <script>
+var $sbody = jQuery.noConflict();
 function updateHieght(){
-	var h = $(".yj-body").innerHeight() - $("div.yj-body-header").outerHeight() - $("div.yj-body-footer").outerHeight() - 18;
+	var h = $sbody(".yj-body").innerHeight() - $sbody("div.yj-body-header").outerHeight() - $sbody("div.yj-body-footer").outerHeight() - 23;
 
-	$("#test").text( $(window).height() + ": " + h + " = " + $(".yj-body").innerHeight() + " - " + $("div.yj-body-header").outerHeight() + " - " + $("div.yj-body-footer").outerHeight());
+	$sbody("#test").text( $sbody(window).height() + ": " + h + " = " + $sbody(".yj-body").innerHeight() + " - " + $sbody("div.yj-body-header").outerHeight() + " - " + $sbody("div.yj-body-footer").outerHeight());
 	
-	$(".yj-body-content").find('div.yj-flex-item').each(function() {
-		
-		$(this).height(h);
+	$sbody("div.yj-body-content").find('div.yj-menu-item').each(function() {
+		$sbody(this).height(h);
 	});
 }
 
-$(document).ready(function() {
+$sbody(document).ready(function() {
 	updateHieght();
-	$(window).resize(function() {
+	$sbody(window).resize(function() {
 		updateHieght();
 	});
 });

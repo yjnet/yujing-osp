@@ -27,17 +27,18 @@
 
 <yj = 'http://osp.yujingnet.com/yj'>
 
-[yj:template] > nt:unstructured
-	- title (string)
-	- description (string)
-	
 [yj:page] > nt:unstructured
 	- title (string)
-	
+
 [yj:pageContent] > nt:unstructured
 	- title (string)
 
-[yj:component] > sling:OrderedFolder
+[yj:component] > nt:unstructured
 	- title (string)
 	- description (string)
+
+[yj:template] > nt:unstructured
+	- title (string)
+	- description (string)
+
 	

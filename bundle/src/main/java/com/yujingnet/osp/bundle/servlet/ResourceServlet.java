@@ -39,7 +39,6 @@ import org.apache.sling.commons.json.JSONObject;
 
 import com.yujingnet.osp.bundle.util.ContentNodeName;
 import com.yujingnet.osp.bundle.util.ContentNodeType;
-import com.yujingnet.osp.bundle.util.SlingUtil;
 import com.yujingnet.osp.bundle.util.UiConstants;
 import com.yujingnet.osp.bundle.xml.Div;
 import com.yujingnet.osp.bundle.xml.Li;
@@ -50,7 +49,7 @@ import com.yujingnet.osp.bundle.xml.Ul;
 @Component(metatype = true)
 @Service(Servlet.class)
 @Properties({ @Property(name = "sling.servlet.resourceTypes", value = "sling/servlet/default"),
-		@Property(name = "sling.servlet.selectors", value = {"all-page", "yj:page", "nt:file" }),
+		@Property(name = "sling.servlet.selectors", value = {"yj:page", "nt:file", "nt:resource", "all-page", "all-node"}),
 		@Property(name = "sling.servlet.extensions", value = "xml"),
 		@Property(name = "sling.servlet.methods", value = { "GET", "POST" }) })
 public class ResourceServlet extends SlingSafeMethodsServlet {
@@ -75,9 +74,9 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 		
 		try {
 			if (resourceResolverFactory == null)
-				resourceResolver = SlingUtil.getAdministrativeResourceResolver(request);
+				resourceResolver = request.getResourceResolver();
 			else
-				resourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
+				resourceResolver = resourceResolverFactory.getResourceResolver(null);
 		} catch (LoginException e) {
 			throw new RuntimeException(e.toString(), e);
 		}
@@ -86,15 +85,15 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 		String selected = request.getRequestPathInfo().getSelectorString();
 		
 		if (selected == null || selected.trim().length() == 0)
-			selected = ContentNodeType.YJ_PAGE;
-		if (selected.equals("all-page"))
 			selected = "nt:resource";
+		if (selected.equals("all-page"))
+			selected = ContentNodeType.YJ_PAGE;
 		
 		try {
 			final JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
 			QueryManager queryManager = session.getWorkspace().getQueryManager();
 			String queryStatement = "/jcr:root" + appendGroupId(request, path)
-					+ "/element(*, " + selected +")  order by jcr:path";
+				+ ((selected.equals("all-node"))? "/*":("/element(*, " + selected +")")) + " order by jcr:path";
 			Query query = queryManager.createQuery(queryStatement, javax.jcr.query.Query.XPATH);
 
 			QueryResult result = query.execute();
@@ -109,8 +108,8 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 			
 			long number = 0l;
 			while (nodes.hasNext()) {
-				appendElement(hash, nodes.nextNode(), true, rootDiv);
-				number++;
+				if(appendElement(hash, nodes.nextNode(), true, rootDiv))
+					number++;
 			}
 
 			div.setNodeNumber(number);
@@ -165,10 +164,13 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 		return level < 2;
 	}
 
-	private void appendElement(final Hashtable<Integer, Li> hash, Node node, boolean isOrdered, final Hashtable<String, Div> rootDiv)
+	private boolean appendElement(final Hashtable<Integer, Li> hash, Node node, boolean isOrdered, final Hashtable<String, Div> rootDiv)
 			throws RepositoryException {
 		if (!isOrdered || hash == null || node == null || node.getPath() == null || rootDiv == null || rootDiv.get("") == null)
 			throw new RuntimeException("Get unsopport Node type");
+		
+		if (node.getPath() == null || node.getPath().equals("/") || node.getPath().startsWith("/jcr:system/"))
+			return false;
 
 		String[] paths = node.getPath().split("/");
 		
@@ -294,6 +296,8 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 			ul.getLi().add(li);
 			hash.put(hashIndex, li);
 		}
+		
+		return true;
 	}
 
 }
