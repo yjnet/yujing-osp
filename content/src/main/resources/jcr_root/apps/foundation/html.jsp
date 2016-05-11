@@ -84,7 +84,8 @@
 	 //   = "/jcr:root/content//* order by jcr:path";
 	  //    = "/jcr:root/etc//*[ jcr:primaryType = 'sling:Folder' or jcr:primaryType = 'nt:file'] order by jcr:path ";
 	  //    = "/jcr:root/etc//element[(*, nt:file)] order by jcr:path ";
-	  = "/jcr:root//* order by jcr:path ";
+	 // = "/jcr:root//* order by jcr:path ";
+	  ="/jcr:root//*[name='templates']";
 	      
 
 	    javax.jcr.query.Query query 

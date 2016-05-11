@@ -29,19 +29,40 @@
   
    <script>
   $(function() {
-    $( "#dialog" ).dialog({
+	$preSelected = null;
+	$isCopy = true;
+	
+    $( ".dialog" ).dialog({
       autoOpen: false,
       show: {
         effect: "blind",
         duration: 500
       }
     });
- 
-    $( "#opener" ).click(function() {
-      $( "#dialog" ).dialog( "open" );
+    
+    $(".auto-close-dialog").dialog({
+    	autoOpen: false,
+        modal: true,
+        show: {
+            effect: "blind",
+            duration: 300
+          },
+        open: function(event, ui){
+         setTimeout("$('div.auto-close-dialog').dialog('close')", 1500);
+        }
     });
     
-    $( "#submit" ).click(function(e) {
+    // create actions
+   $( "#create-page-button" ).click(function() {
+    	if (navT.path == null) {
+    		warningMessage("Please select a place for page to create");
+    	}
+    	else {
+      		$( ".create-page-dialog" ).dialog( "open" );
+    	}
+    });
+    
+    $( "#submit-create" ).click(function(e) {
     	//e.preventDefault(); 
     	var path = $(this).parent().find("#path-name-input").val().trim();
     	var qstring = "jcr:title=" + encodeURIComponent($(this).parent().find("#title-input").val().trim());
@@ -57,53 +78,197 @@
     	 
     	var jqxhr = $.ajax( navT.path + "/" + path + ".create.node?" + qstring )
     	  .done(function() {
-    	    alert( "success" );
+    			showMessage( "success" );
+    	    	navT.path = null;
     	  })
     	  .fail(function() {
-    	    alert( "error" );
+    	    	alert( "error" );
     	  })
     	  .always(function() {
-    		  $( "#dialog" ).dialog( "close" );
+    			$( ".create-page-dialog" ).dialog( "close" );
+    			$preSelected = null;
     	  });       
-      });
+    });
+    
+    $( "#cancel-create" ).click(function(e) {
+    	$( ".create-page-dialog" ).dialog( "close" );
+    });
+    
+    
+    // delete actions
+    $( "#delete-page-button" ).click(function() {
+    	if (navT.path == null) {
+    		warningMessage("Please select a page to delete");
+    	}
+    	else {
+    		$( "div#delete-page-dialog-div span#delete-path" ).html(navT.path);
+      		$( ".delete-page-dialog" ).dialog( "open" );
+    	}
+    });
+    
+    $( "#confirm-delete" ).click(function(e) {
+    	var jqxhr = $.ajax( navT.path + ".delete.node?" )
+    	  .done(function() {
+    		  showMessage( "success" );
+    		  navT.path = null;
+    	  })
+    	  .fail(function() {
+    		  alert( "error" );
+    	  })
+    	  .always(function() {
+    		  $( ".delete-page-dialog" ).dialog( "close" );
+    		  $preSelected = null;
+    	  });       
+    });
+    
+    $( "#cancel-delete" ).click(function(e) {
+    	$( ".delete-page-dialog" ).dialog( "close" );
+    });
+    
+    
+    // copy
+    $( "#copy-page-button" ).click(function(e) {
+    	if (navT.path == null) {
+    		warningMessage("Please select a page for copy");
+    	}
+    	else {
+	    	$preSelected = navT.path;
+	    	$isCopy = true;
+	    	showMessage("Copy " + $preSelected + "  ...");
+    	}
+    });
+    
+    
+    // cut
+    $( "#cut-page-button" ).click(function(e) {
+    	if (navT.path == null) {
+    		warningMessage("Please select a page for copy");
+    	}
+    	else {
+	    	$preSelected = navT.path;
+	    	$isCopy = false;
+	    	showMessage("Cut " + $preSelected + "  ...");
+    	}
+    });
+    
+    
+ 	// paste actions
+    $( "#paste-page-button" ).click(function() {
+    	if ($preSelected == null) {
+    			warningMessage("Please select a page to paste at first");
+    	}
+    	else if (navT.path == null) {
+    		if ($isCopy){
+    			warningMessage("Please tell where to copy");
+    		}
+    		else {
+    			warningMessage("Please tell where to move");
+    		}
+    	}
+    	else if (navT.path == $preSelected) {
+    		warningMessage("Please select a new place for paste");
+    	}
+    	else {
+    		$( "div#paste-page-dialog-div div#paste-message" ).html((($isCopy)? "Copy":"Move") + " from " + $preSelected + " to " + navT.path + " ?");
+      		$( ".paste-page-dialog" ).dialog( "open" );
+    	}
+    });
+    
+    $( "#confirm-paste" ).click(function(e) {
+    	actionMode = ($isCopy)? "copy":"move";
+    	
+    	var jqxhr = $.ajax( $preSelected + "." + actionMode + ".node?yj:newPath=" + navT.path)
+    	  .done(function() {
+    		  showMessage( actionMode + " succeed!" );
+    		  navT.path = null;
+    	  })
+    	  .fail(function() {
+    		  alert( actionMode + " failed." );
+    	  })
+    	  .always(function() {
+    		  $( ".paste-page-dialog" ).dialog( "close" );
+    		  $preSelected = null;
+    	  });       
+    });
+    
+    $( "#cancel-paste" ).click(function(e) {
+    	$( ".delete-page-dialog" ).dialog( "close" );
+    });
+    
+    
+    // message box actions
+    function warningMessage(msg) {
+    	$( "div.auto-close-dialog").attr("title", "Warning");
+    	$( "div.auto-close-dialog span#message-dialog-span" ).html(msg);
+    	$( "div.auto-close-dialog" ).dialog( "open" );
+    }
+    
+    function showMessage(msg) {
+    	$( "div.auto-close-dialog").attr("title", "Message");
+    	$( "div.auto-close-dialog span#message-dialog-span" ).html(msg);
+    	$( "div.auto-close-dialog" ).dialog( "open" );
+    }
   });
   </script>
-</head>
-<body>
- 
-<div id="dialog" title="New Page" style="width: 300px">
-	<form method="get">
-		<div>
-			<div class="table">
-				<div class="tr">
-					<div class="td table-cell">Title:</div>
-					<div class="td table-cell" id="title"><input id="title-input" style="min-width: 40px;"></input></div>
-				</div>
-				<div class="tr">
-					<div class="td table-cell">Path Name:</div>
-					<div class="td table-cell" id="path-name"><input id="path-name-input"></input></div>
-				</div>
-			</div>
-			
-			<div class="table">
-				<div class="tr">
-					<div class="td table-cell">
-						<img src="/etc/clientlibs/yujing-osp/ui/img/template-default-thumbnail.png" />
-					</div>
-					<div class="td table-cell">
-						<p class="cell-title">Default template</p>
-						<p>basic template</p>
-					</div>
-					<div style="clear: both"></div>
-				</div>
-			</div>
-		</div>
+
+<div style="display: none">
+	<div class="auto-close-dialog" title="Tips">
+		<span id="message-dialog-span"></span>
+	</div>
 	
-		<button id="submit">Submit</button>
-	</form>
+	<div id="create-page-dialog-div" class="dialog create-page-dialog" title="New Page" style="width: 300px">
+		<form method="get">
+			<div>
+				<div class="table">
+					<div class="tr">
+						<div class="td table-cell">Title:</div>
+						<div class="td table-cell" id="title"><input id="title-input" style="min-width: 40px;"></input></div>
+					</div>
+					<div class="tr">
+						<div class="td table-cell">Path Name:</div>
+						<div class="td table-cell" id="path-name"><input id="path-name-input"></input></div>
+					</div>
+				</div>
+				
+				<div class="table">
+					<div class="tr">
+						<div class="td table-cell">
+							<img src="/etc/clientlibs/yujing-osp/ui/img/template-default-thumbnail.png" />
+						</div>
+						<div class="td table-cell">
+							<p class="cell-title">Default template</p>
+							<p>basic template</p>
+						</div>
+						<div style="clear: both"></div>
+					</div>
+				</div>
+			</div>
+		
+			<div>
+				<button id="submit-create">Submit</button>
+				<button id="cancel-create">Cancel</button>
+			</div>
+		</form>
+	</div>
+	
+	<div id="delete-page-dialog-div" class="dialog delete-page-dialog">
+		<div>Delete <span id="delete-path"></span> ?</div>
+		
+		<div><button id="confirm-delete">Yes</button> <button id="cancel-delete">No</button></div>
+	</div>
+	
+	<div id="paste-page-dialog-div" class="dialog paste-page-dialog">
+		<div id="paste-message"></div>
+		
+		<div><button id="confirm-paste">Yes</button> <button id="cancel-paste">No</button></div>
+	</div>
 </div>
- 
-<button id="opener">New Page</button>
+
+<button id="create-page-button">New Page</button>
+<button id="delete-page-button">Delete</button>
+<button id="copy-page-button">Copy</button>
+<button id="cut-page-button">Cut</button>
+<button id="paste-page-button">Paste</button>
  
   
   

@@ -174,7 +174,7 @@ var navT = jQuery(document).ready(function(){
 		}
 	});
 	
-	navT.path = "/content";
+	navT.path = null;
 
 //	-->
 </script>
