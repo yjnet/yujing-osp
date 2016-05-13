@@ -17,9 +17,12 @@
 	.caption  { display: table-caption }
 	
 	.table-cell {
-		text-weight: bold;
 		padding-top: 10px;
 		padding-right: 20px;
+	}
+	
+	.cell-title {
+		font-weight: bold;
 	}
 	
 	div.table-cell input {
@@ -64,18 +67,17 @@
     
     $( "#submit-create" ).click(function(e) {
     	//e.preventDefault(); 
-    	var path = $(this).parent().find("#path-name-input").val().trim();
-    	var qstring = "jcr:title=" + encodeURIComponent($(this).parent().find("#title-input").val().trim());
+    	$form = $(this).parents("form#create-page-dialog-form");
+    	path = $form.find("#path-name-input").val().trim();
+    	qstring = "jcr:title=" + encodeURIComponent($form.find("#title-input").val().trim());
     	
     	if (path.length == 0) {
-    		path = $(this).parent().find("#title-input").val().trim().replace(/ /g, "_");
+    		path = $form.find("#title-input").val().trim().replace(/ /g, "_");
     	}
     	else {
     		qstring += "&jcr:path=" + encodeURIComponent(path);
     	}
-    	
-    	qstring += "&sling:resourceType=" + "foundation/components/page/defaul-template";
-    	 
+    	qstring += "&sling:resourceType=" + $tmplChoice.selected;
     	var jqxhr = $.ajax( navT.path + "/" + path + ".create.node?" + qstring )
     	  .done(function() {
     			showMessage( "success" );
@@ -87,7 +89,7 @@
     	  .always(function() {
     			$( ".create-page-dialog" ).dialog( "close" );
     			$preSelected = null;
-    	  });       
+    	  });
     });
     
     $( "#cancel-create" ).click(function(e) {
@@ -217,34 +219,12 @@
 	</div>
 	
 	<div id="create-page-dialog-div" class="dialog create-page-dialog" title="New Page" style="width: 300px">
-		<form method="get">
+		<form id="create-page-dialog-form" method="get">
 			<div>
-				<div class="table">
-					<div class="tr">
-						<div class="td table-cell">Title:</div>
-						<div class="td table-cell" id="title"><input id="title-input" style="min-width: 40px;"></input></div>
-					</div>
-					<div class="tr">
-						<div class="td table-cell">Path Name:</div>
-						<div class="td table-cell" id="path-name"><input id="path-name-input"></input></div>
-					</div>
-				</div>
-				
-				<div class="table">
-					<div class="tr">
-						<div class="td table-cell">
-							<img src="/etc/clientlibs/yujing-osp/ui/img/template-default-thumbnail.png" />
-						</div>
-						<div class="td table-cell">
-							<p class="cell-title">Default template</p>
-							<p>basic template</p>
-						</div>
-						<div style="clear: both"></div>
-					</div>
-				</div>
+				<sling:include replaceSelectors="content_design.templateList" />
 			</div>
 		
-			<div>
+			<div style="margin-top: 30px; margin-right: 20px; margin-bottom: 10px; float: right;">
 				<button id="submit-create">Submit</button>
 				<button id="cancel-create">Cancel</button>
 			</div>
@@ -269,6 +249,5 @@
 <button id="copy-page-button">Copy</button>
 <button id="cut-page-button">Cut</button>
 <button id="paste-page-button">Paste</button>
- 
-  
+
   
