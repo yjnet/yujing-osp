@@ -4,6 +4,7 @@
     xmlns:jcr="http://www.jcp.org/jcr/1.0"
     description="default settting for development testing"
     title="Testing Template"
+    template="foundation/components/page/defaul-template"
     jcr:primaryType="sling:Folder">
     <jcr:content jcr:primaryType="yj:pageContent"
     	sling:resourceType="foundation/components/page/defaul-template"/>

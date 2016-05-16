@@ -77,7 +77,7 @@
     	else {
     		qstring += "&jcr:path=" + encodeURIComponent(path);
     	}
-    	qstring += "&sling:resourceType=" + $tmplChoice.selected;
+    	qstring += "&sling:resourceType=" + $selectedTemplate;
     	var jqxhr = $.ajax( navT.path + "/" + path + ".create.node?" + qstring )
     	  .done(function() {
     			showMessage( "success" );

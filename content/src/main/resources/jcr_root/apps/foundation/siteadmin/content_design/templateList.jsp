@@ -30,6 +30,61 @@
 		min-width:60px;
 	}
     
+	.yj-template-item {
+	    border-color: #FFFFFF rgb(255, 255, 255) rgb(238, 238, 238);
+	    border-style: solid;
+	    border-width: 1px;
+	    color: #555555;
+	    font-family: tahoma,arial,helvetica,sans-serif;
+	    font-size: 11px;
+	    /* font-size-adjust: none; */
+	    font-stretch: normal;
+	    font-style: normal;
+	    font-variant: normal;
+	    font-weight: normal;
+	    line-height: normal;
+	    padding: 7px 7px;
+	    white-space: normal;
+	}
+	
+	.yj-template-thumbnail {
+	    float: left;
+	    margin-right: 7px;
+	    max-width: 128px;
+	    width:50px;
+	    height: 50px
+	}
+	
+	.yj-template-title {
+	    font-weight: bold;
+	    white-space: nowrap;
+	}
+	
+	.yj-template-description {
+	    font-style: italic;
+	}
+	
+	.yj-x-view-selected {
+	    /* border-color: #d0d0d0; */
+	    background: #CCCCCC no-repeat right bottom;
+	    border: 1px solid;
+	    border-radius: 10px;
+	}
+	    
+	.yj-template-view {
+	    padding: 4px;
+	    /* position: absolute; */
+	    border: 1px solid #B5B8C8;
+	}
+	
+	.yj-x-panel {
+	    border-color: #d0d0d0;
+	}
+	    
+	.yj-x-panel-noborder {
+	    border-color: #d0d0d0;
+	    border-width: 0px;
+	}
 </style>
 <div id="new-page-templates">
 	<div class="table">
@@ -44,16 +99,20 @@
 	</div>
 	<hr/>
 	
-	<div id="templates" class="table">
+	<div id="templates" class="yj-template-view yj-x-panel">
 		<span style="margin-top: 10px; margin-bottom: 30px;">Select a template</span>
 	</div>
 	
 	<script>
+	var $selectedTemplate = null;
 		var $tmpl = jQuery.noConflict();
 		
 		var $tmplChoice = $tmpl(document).ready(function() {
+			var $resourceTypes = new Object();
+			var $templateDiv = $tmpl("#templates");
+			
 			$tmpl.ajaxSetup({async:false});
-			var jqxhr = $tmpl.ajax( "/apps.prop.json?statement=/jcr:root/apps/*/templates/*&property=jcr:description&property=jcr:title&property=sling:resourceType" )
+			var jqxhr = $tmpl.ajax( "/apps.prop.json?statement=/jcr:root/apps/*/templates/*&property=jcr:description&property=jcr:title&property=template" )
 		  	  .done(function(data, textStatus, jqXHR) {
 			  		for(var x=0; x<data.length; x++){
 			  			if (data[x].name == ".content.xml" || data[x].name == "thumbnail.png") {
@@ -63,7 +122,7 @@
 	                    var jcr_title = data[x]['jcr:title'];
 	                    var jcr_path = data[x]['jcr:path'];
 	                    var jcr_description = data[x]['jcr:description'];
-	                    var sling_resourceType = data[x]['sling:resourceType'];
+	                    var sling_resourceType = data[x]['template'];
 	                    
 	                    if (jcr_title == null || jcr_title == 'undefined') {
 	                    	jcr_title = name.replace(/-/g, " ").replace(/_/g, " ");
@@ -73,26 +132,23 @@
 	                    	jcr_description = "";
 	                    }
 	                    
-                       	var template = $tmpl("<div class=\"tr\" resourceType=\"" + sling_resourceType + "\"></div>");
-   	                    
-   	                    var template1 =$tmpl("<div class=\"td table-cell\"></div>");
-   	                    template1.append("<img src=\"" + jcr_path + "/thumbnail.png\" />");
-   	                    template.append(template1);
-   	                    
-   	                    var template2 =$tmpl("<div></div>");
-   	                    template2.append("<p class=\"cell-title\">" + jcr_title + "</p>");
-   	                    template2.append("<p>" + jcr_description + "</p>");
-   	                    template.append(template2);
-   	                    
-   	                    template.append("<div style=\"clear: both\"></div>");
-   	                    
-   	                    $tmpl("#templates").append(template);
+	                    $resourceTypes[x] = x;
+	                    
+                       	var template = $tmpl("<div class=\"yj-template-item" + ((x==0)? " yj-x-view-selected":"") + "\"></div>");
+                       	template.append("<img class=\"yj-template-thumbnail\" src=\"" + jcr_path + "/thumbnail.png\" style=\"width:45px; height: 45px\"/>");
+                       	template.append("<div class=\"yj-template-title\">" + jcr_title + "</div>");
+                       	template.append("<div class=\"yj-template-description\">" + jcr_description + "</div>");
+                       	template.append("<div style=\"clear:both\"></div>");
+                       	
+                       	$templateDiv.append(template);
 	                }
 			  	  })
 			  	  .fail(function(jqXHR, textStatus, errorThrown) {
 			  		  alert( "error" );
 			  	  })
 			  	  .always(function() {
+			  		$selectedTemplate = $resourceTypes[0];
+			  		
 			  		$tmpl("#templates").find("img").each(function(e) {
 			  			var $img = $tmpl(this);
 			  			var img_url = $img.attr("src");
@@ -111,22 +167,20 @@
 			  			});
 			  		});
 			
-			  		
-		  		    var $elem = $tmpl("div#templates.table div.tr").click(function() {
-		  		        $elem.attr("style","");
-		  		        $tmpl(this).attr("style", "background-color: yellow;");
-		  		      	setTemplateChoice($tmpl(this).attr("resourceType"));
-		  		    });
+		  		    var $tempOpt = $tmpl("#templates div.yj-template-item").click(function(i, e) {
+			  		    	$tempOpt.removeClass("yj-x-view-selected");
+			  		    	$tmpl(this).addClass("yj-x-view-selected");
+			  		    	setTemplateChoice($resourceTypes[$tmpl("#templates div.yj-template-item").index($tmpl(this))]);
+			  		    });
 		  		    
 			  	  });
 		});
 		
-		$tmplChoice.selected = null;
 	</script>
 	
 	<script type="text/javascript">
 		function setTemplateChoice(sel) {
-			$tmplChoice.selected = sel;
+			$selectedTemplate = sel;
 		}
 	</script>
 </div>
