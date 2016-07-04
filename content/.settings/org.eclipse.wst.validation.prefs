@@ -6,4 +6,5 @@ eclipse.preferences.version=1
 override=true
 suspend=false
 vals/org.eclipse.angularjs.jsp.core.JSPAngularContentValidator/global=TF01
+vals/org.eclipse.jst.jsp.core.JSPBatchValidator/global=TF01
 vf.version=3

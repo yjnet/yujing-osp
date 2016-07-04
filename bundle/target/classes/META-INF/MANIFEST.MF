@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1463357713541
-Build-Jdk: 1.8.0_60
-Built-By: yzhang15
+Bnd-LastModified: 1467607555954
+Build-Jdk: 1.8.0_91
+Built-By: Angelina
 Bundle-Description: com.yujingnet.osp - bundle
 Bundle-ManifestVersion: 2
 Bundle-Name: yujing-osp bundle
@@ -39,7 +39,7 @@ Import-Package: com.yujingnet.osp.bundle.service;version="[0.0,1)",com.y
  g.apache.sling.jcr.resource;version="[2.0,3)",org.osgi.framework;versio
  n="[1.5,2)",org.osgi.service.component;version="[1.1,2)",org.osgi.servi
  ce.event;version="[1.2,2)",org.slf4j;version="[1.7,2)"
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Service-Component: OSGI-INF/com.yujingnet.osp.bundle.servlet.NodeManagem
  entServlet.xml,OSGI-INF/com.yujingnet.osp.bundle.service.NodeManagement
  ServiceImpl.xml,OSGI-INF/com.yujingnet.osp.bundle.service.WebResourceIn
