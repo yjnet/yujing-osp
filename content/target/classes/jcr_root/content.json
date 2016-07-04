@@ -17,9 +17,9 @@
         "jcr:content": {
         		"jcr:primaryType": "yj:pageContent",
         		"jcr:created": "2016-05-03T00:10:47.123-05:00",
-        		"sling:resourceType": "foundation/components/page/defaul-template",
+        		"sling:resourceType": "foundation/components/page/yj-default-template",
         		"title" : "demo foundation/demo -- sling:resourceSuperType=foundation/demoSuper",
-        		"maincontent": {
+        		"par": {
         				"jcr:primaryType": "nt:unstructured",
         				"sling:resourceType": "yujing/components/parsys",
         				"image": {

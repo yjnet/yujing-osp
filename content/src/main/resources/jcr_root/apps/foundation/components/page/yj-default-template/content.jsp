@@ -1,0 +1,1 @@
+foundation/components/page/yj-default-template

@@ -1,0 +1,1 @@
+yujing/components/page/defaul-template.jsp

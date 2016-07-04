@@ -41,35 +41,7 @@
    <h1><%= currentNode.getPath() %></h1>
    <h2><%= properties.get("title") %></h2>
    
-   
-<p><a href="#" id="samplebutton" onClick="return false">Click here</a> to add a New Folder node to the end of the existing tree</p>
-
-<ul>
-		<li><span class="folder">Folder 1</span>
-			<ul id="browser" class="filetree">
-				<li><span class="file">Item 1.1</span></li>
-			</ul>
-		</li>
-		<li><span class="folder">Folder 2</span>
-			<ul id="browser" class="filetree">
-				<li><span class="folder">Subfolder 2.1</span>
-					<ul id="folder21">
-						<li><span class="file">File 2.1.1</span></li>
-						<li><span class="file">File 2.1.2</span></li>
-					</ul>
-				</li>
-				<li><span class="file">File 2.2</span></li>
-			</ul>
-		</li>
-		<li class="closed"><span class="folder">Folder 3 (closed at start)</span>
-			<ul id="browser" class="filetree">
-				<li><span class="file">File 3.1</span></li>
-			</ul>
-		</li>
-		<li><span class="file">File 4</span></li>
-	</ul>
-   
-   
+  
    <%
    javax.jcr.Session session = resourceResolver.adaptTo(javax.jcr.Session.class);
    javax.jcr.query.QueryManager queryManager = currentNode.getSession().getWorkspace().getQueryManager(); //session.getWorkspace().getQueryManager();
@@ -84,7 +56,7 @@
 	 //   = "/jcr:root/content//* order by jcr:path";
 	  //    = "/jcr:root/etc//*[ jcr:primaryType = 'sling:Folder' or jcr:primaryType = 'nt:file'] order by jcr:path ";
 	  //    = "/jcr:root/etc//element[(*, nt:file)] order by jcr:path ";
-	  = "/jcr:root//* order by jcr:path ";
+	  = "/jcr:root/content//element(*, yj:page) order by jcr:path";
 	      
 
 	    javax.jcr.query.Query query 

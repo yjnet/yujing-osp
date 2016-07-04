@@ -25,6 +25,7 @@ public class ContentNodePropertyName {
     
     public static String YJ_PRIMARY_TYPE = "yj:primaryType";
     public static String YJ_NEW_PATH = "yj:newPath";
+    public static String YJ_OLD_PATH = "yj:oldPath";
     public static String YJ_TEMPLATE = "yj:template";
     public static String YJ_DESIGN_PATH = "yj:designPath";
     public static String YJ_LAST_REPLICATED = "yj:lastReplicated";

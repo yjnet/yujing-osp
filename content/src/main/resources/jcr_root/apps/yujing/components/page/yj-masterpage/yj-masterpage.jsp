@@ -1,0 +1,1 @@
+<div>yj-masterpage</div>

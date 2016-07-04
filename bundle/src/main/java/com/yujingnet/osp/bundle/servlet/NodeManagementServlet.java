@@ -60,7 +60,7 @@ public class NodeManagementServlet extends SlingSafeMethodsServlet {
     		int len = request.getPathInfo().length() - (request.getRequestPathInfo().getSelectorString().length() + 1) - (request.getRequestPathInfo().getExtension().length() + 1);
     		Hashtable<String, Object> param = getParam(request);
     		String nodePath = request.getPathInfo().substring(0, len);
-			String newPath = param.containsKey(ContentNodePropertyName.YJ_NEW_PATH)? param.get(ContentNodePropertyName.YJ_NEW_PATH).toString() : null;
+			String oldPath = param.containsKey(ContentNodePropertyName.YJ_OLD_PATH)? param.get(ContentNodePropertyName.YJ_OLD_PATH).toString() : null;
 			ResourceResolver resourceResolver = request.getResourceResolver();
 			
 			Calendar calendar = Calendar.getInstance();
@@ -79,11 +79,11 @@ public class NodeManagementServlet extends SlingSafeMethodsServlet {
 					break;
 				
 				case "move": 
-					service.changeNodeName(resourceResolver, nodePath, newPath);
+					service.changeNodeName(resourceResolver, oldPath, nodePath);
 					break;
 			
 				case "copy": 
-					service.copyNode(resourceResolver, nodePath, newPath);
+					service.copyNode(resourceResolver, oldPath, nodePath);
 					break;
 			
 				case "delete": 

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1462511786596
-Build-Jdk: 1.8.0_60
+Bnd-LastModified: 1467607659968
+Build-Jdk: 1.8.0_51
 Built-By: yzhang15
 Bundle-Description: com.yujingnet.osp - content
 Bundle-ManifestVersion: 2

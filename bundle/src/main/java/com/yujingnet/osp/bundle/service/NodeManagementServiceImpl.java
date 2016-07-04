@@ -209,24 +209,8 @@ public class NodeManagementServiceImpl implements NodeManagementService {
 	}
 	
 	public void changeNodeName(ResourceResolver resourceResolver, String moveFrom, String moveTo) throws Exception {
-		if ( moveTo == null || moveTo.trim().length() == 0) {
-			throw new RepositoryException("New node path is not available");
-		}
-		
-		checkAuthority(resourceResolver, moveFrom, getFullpath(moveFrom, moveTo));
-		
-		Resource oldPathResource = resourceResolver.getResource(moveFrom);
-		
-		ModifiableValueMap properties = oldPathResource.adaptTo(ModifiableValueMap.class);
-		properties.put(ContentNodePropertyName.JCR_LAST_MODIFIED, Calendar.getInstance());
-		properties.put(ContentNodePropertyName.JCR_LAST_MODIFIED_BY, resourceResolver.getUserID());
-		
-		String parent = (moveTo.contains("/"))? moveTo.substring(0, moveTo.lastIndexOf("/")) : moveFrom.substring(0, moveFrom.lastIndexOf("/"));
-		String nameName = (moveTo.contains("/"))? moveTo.substring(moveTo.lastIndexOf("/")+1) : moveTo;
-		resourceResolver.create(resourceResolver.getResource(parent), nameName, properties);
-		
-		resourceResolver.delete(oldPathResource);
-		resourceResolver.commit();
+		copyNode(resourceResolver, moveFrom, moveTo);
+		deleteNode(resourceResolver, moveFrom);
 	}
 	
 	public void copyNode(ResourceResolver resourceResolver, String copyFrom, String copyTo) throws Exception {
@@ -242,8 +226,8 @@ public class NodeManagementServiceImpl implements NodeManagementService {
 		properties.put(ContentNodePropertyName.JCR_LAST_MODIFIED, Calendar.getInstance());
 		properties.put(ContentNodePropertyName.JCR_LAST_MODIFIED_BY, resourceResolver.getUserID());
 		
-		String parent = (copyTo.contains("/"))? copyTo.substring(0, copyTo.lastIndexOf("/")) : copyFrom.substring(0, copyFrom.lastIndexOf("/"));
-		String nameName = (copyTo.contains("/"))? copyTo.substring(copyTo.lastIndexOf("/")+1) : copyTo;
+		String parent = (copyTo.startsWith("/"))? copyTo : copyFrom.substring(0, copyFrom.lastIndexOf("/"));
+		String nameName = (copyFrom.contains("/"))? copyFrom.substring(copyFrom.lastIndexOf("/")+1) : copyFrom;
 		resourceResolver.create(resourceResolver.getResource(parent), nameName, properties);
 		
 		resourceResolver.commit();

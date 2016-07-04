@@ -1,0 +1,1 @@
+<div>foundation/components/page/yj-masterpage</div>
