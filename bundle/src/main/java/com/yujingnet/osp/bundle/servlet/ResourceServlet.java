@@ -60,6 +60,7 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 
 	private ResourceResolver resourceResolver;
 	private static String defaultPath = "/content";
+	private static int defaultLelevel = 2;
 	
 	@Override
 	protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
@@ -67,7 +68,7 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 		String path = request.getParameter("anchor-path");
 		PrintWriter out = response.getWriter();
 		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-		Hashtable<Integer, Li> hash = new Hashtable<Integer, Li>();
+		Hashtable<String, Li> folders = new Hashtable<String, Li>();
 		Hashtable<String, Div> rootDiv = new Hashtable<String, Div>();
 
 		response.setContentType("text/xml,application/rss+xml");
@@ -108,7 +109,7 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 			
 			long number = 0l;
 			while (nodes.hasNext()) {
-				if(appendElement(hash, nodes.nextNode(), true, rootDiv))
+				if(appendElement(folders, nodes.nextNode(), true, rootDiv))
 					number++;
 			}
 
@@ -161,12 +162,23 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 	}
 	
 	private boolean isDiv(int level) {
-		return level < 2;
+		return level < defaultLelevel;
+	}
+	
+	private boolean isDiv(String path) {
+		return isDiv(pathDepth(path));
+	}
+	
+	private int pathDepth(String path) {
+		if (path == null)
+			return 0;
+		
+		return path.split("/").length;
 	}
 
-	private boolean appendElement(final Hashtable<Integer, Li> hash, Node node, boolean isOrdered, final Hashtable<String, Div> rootDiv)
+	private boolean appendElement(final Hashtable<String, Li> folders, Node node, boolean isOrdered, final Hashtable<String, Div> rootDiv)
 			throws RepositoryException {
-		if (!isOrdered || hash == null || node == null || node.getPath() == null || rootDiv == null || rootDiv.get("") == null)
+		if (!isOrdered || folders == null || node == null || node.getPath() == null || rootDiv == null || rootDiv.get("") == null)
 			throw new RuntimeException("Get unsopport Node type");
 		
 		if (node.getPath() == null || node.getPath().equals("/") || node.getPath().startsWith("/jcr:system/"))
@@ -175,7 +187,6 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 		String[] paths = node.getPath().split("/");
 		
 		
-		int hashIndex = 0;
 		StringBuffer path = new StringBuffer();
 		String parentPath = "";
 
@@ -183,26 +194,21 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 			if (paths[i]==null || paths[i].trim().length() == 0)
 				continue;
 
-			hashIndex++;
-			
 			parentPath = path.toString();
 			path.append("/" + paths[i]);
 				
-			if (isDiv(hashIndex) && rootDiv.containsKey(path.toString()))
+			// if not create tree-view-<li> && those non-tree-div already store in rootDiv container, then continue
+			if (isDiv(path.toString()) && rootDiv.containsKey(path.toString()))
 				continue;
-			else if (!isDiv(hashIndex) && hash.containsKey(hashIndex)) {
-				if (hash.get(hashIndex) != null && path.toString().equals(hash.get(hashIndex).getName())) {
+			
+			// else if need to create tree-view-<li>, and those <li> already create as folder <li>, then check
+			else if (!isDiv(path.toString()) && folders.containsKey(path.toString())) {
+				if (folders.get(path.toString()) != null && path.toString().equals(folders.get(path.toString()).getName())) {
 					continue;
 				}
-			
-				hash.remove(hashIndex);
-			}
-			
-			if (hash.containsKey(hashIndex+1)) {
-				hash.remove(hashIndex+1);
 			}
 
-			if (isDiv(hashIndex)) {
+			if (isDiv(path.toString())) {
 				if (!rootDiv.containsKey(path.toString())) {
 					Div parentDiv = rootDiv.get(parentPath);
 					
@@ -247,7 +253,7 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 			li.getSpanOrUl().add(span);
 			
 			// add <li> to <div>
-			if (isDiv(hashIndex-1)) {
+			if (isDiv(parentPath)) {
 				Div div;
 				if (rootDiv.containsKey(parentPath))
 					div = rootDiv.get(parentPath);
@@ -262,7 +268,7 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 				ul.getLi().add(li);
 				
 				div.getDivOrUlOrSpan().add(ul);
-				hash.put(hashIndex, li);
+				folders.put(path.toString(), li);
 				continue;
 			}
 				
@@ -270,8 +276,8 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 			Ul ul = null;
 			
 			// if parent contains <ul>, get it
-			if (hash.containsKey(hashIndex-1)) {
-				List<Object> list = hash.get(hashIndex-1).getSpanOrUl();
+			if (folders.containsKey(parentPath)) {
+				List<Object> list = folders.get(parentPath).getSpanOrUl();
 
 				for (int x=0; x<list.size(); x++) {
 					if (list.get(x) instanceof Ul) {
@@ -284,8 +290,8 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 			if (ul == null) {
 				ul = new Ul();
 				ul.setName(path.toString() + "/");
-				if (hash.containsKey(hashIndex-1)) {
-					hash.get(hashIndex-1).getSpanOrUl().add(ul);
+				if (folders.containsKey(parentPath)) {
+					folders.get(parentPath).getSpanOrUl().add(ul);
 				} else if (rootDiv.containsKey(parentPath))
 					rootDiv.get(parentPath).getDivOrUlOrSpan().add(ul);
 				
@@ -294,7 +300,7 @@ public class ResourceServlet extends SlingSafeMethodsServlet {
 			}
 
 			ul.getLi().add(li);
-			hash.put(hashIndex, li);
+			folders.put(path.toString(), li);
 		}
 		
 		return true;

@@ -2,8 +2,9 @@
 <jcr:root 
     xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     xmlns:jcr="http://www.jcp.org/jcr/1.0"
-    jcr:description="Very basic default settting"
-    jcr:title="Basic Configuration Template"
+    description="Very basic default settting"
+    title="Basic Configuration Template"
     jcr:primaryType="yj:template">
-    <jcr:content jcr:primaryType="yj:pageContent"/>
+    <jcr:content jcr:primaryType="yj:pageContent"
+    	sling:resourceType="foundation/components/page/defaul-template"/>
 </jcr:root>

@@ -1,25 +1,34 @@
 package com.yujingnet.osp.bundle.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.jcr.api.SlingRepository;
 import org.apache.sling.jcr.resource.JcrResourceUtil;
@@ -28,7 +37,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Modified;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.apache.sling.commons.json.JSONException;
+import org.apache.sling.commons.json.io.JSONWriter;
 import com.yujingnet.osp.bundle.util.ContentNodeName;
 import com.yujingnet.osp.bundle.util.ContentNodePropertyName;
 import com.yujingnet.osp.bundle.util.ContentNodeType;
@@ -36,6 +46,7 @@ import com.yujingnet.osp.bundle.util.ContentNodeType;
 @Service
 @Component(immediate=true)
 public class NodeManagementServiceImpl implements NodeManagementService {
+	private static final String REP_EXCERPT = "rep:excerpt()";
 	
 	@Reference
     private SlingRepository slingRepository;
@@ -304,6 +315,73 @@ public class NodeManagementServiceImpl implements NodeManagementService {
 		return name;
 	}
 	
+	// the node properties in jSon format output to writer
+	public void getNodeProperties(Writer writer, ResourceResolver resolver,
+			String statement, String queryType, long skip, long count, List<String> properties, String exerptPath) {
+		
+		Iterator<Map<String, Object>> result = resolver.queryResources(statement, queryType);
+
+		// Skip the first few results
+		while (skip > 0 && result.hasNext()) {
+			result.next();
+			skip--;
+		}
+
+		try {
+			final JSONWriter w = new JSONWriter(writer);
+			w.array();
+
+			// iterate through the result set and build the "json result"
+			while (result.hasNext() && count != 0) {
+				Map<String, Object> row = result.next();
+
+				w.object();
+				String path = row.get("jcr:path").toString();
+
+				w.key("name");
+				w.value(ResourceUtil.getName(path));
+
+				// dump columns
+				for (String colName : row.keySet()) {
+					w.key(colName);
+					String strValue = "";
+					if (colName.equals(REP_EXCERPT)) {
+						Object ev = row.get("rep:excerpt(" + exerptPath + ")");
+						strValue = (ev == null) ? "" : ev.toString();
+					} else {
+						strValue = formatValue(row.get(colName));
+					}
+					w.value(strValue);
+				}
+
+				// load additional properties and add them to the result set
+				if (!properties.isEmpty()) {
+					Resource nodeRes = resolver.getResource(path);
+					dumpProperties(w, nodeRes, properties);
+					
+					if ((!path.endsWith("/jcr:content")) && (!path.endsWith("/jcr:content/"))) {
+						w.key("jcr:content");
+						w.object();
+						dumpProperties(w, resolver.getResource((path.endsWith("/"))? (path+"jcr:content"):(path+"/jcr:content")), properties);
+						w.endObject();
+					}
+				}
+
+				w.endObject();
+				count--;
+			}
+			w.endArray();
+		} catch (JSONException je) {
+			try {
+				writer.append(je.toString());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			throw wrapException(je);
+		}
+	}
+	
 //	@Activate
 	public void activate(ComponentContext ctx, Map<String, Object> configMap) {
 //	    prepare(ctx, configMap);
@@ -332,5 +410,71 @@ public class NodeManagementServiceImpl implements NodeManagementService {
 				throw new PersistenceException("Not authorized node path: '" + path + "'. Please create content node under '" + validPrefix + "' without ending with '/'");
 			}
 		}
+	}
+	
+	private void dumpProperties(JSONWriter w, Resource nodeRes, List<String> properties) throws JSONException {
+
+		// nothing to do if there is no resource
+		if (nodeRes == null) {
+			return;
+		}
+
+		ResourceResolver resolver = nodeRes.getResourceResolver();
+		for (String property : properties) {
+			Resource prop = resolver.getResource(nodeRes, property);
+			if (prop != null) {
+				String strValue;
+				Value value = prop.adaptTo(Value.class);
+				if (value != null) {
+					strValue = formatValue(value);
+				} else {
+					strValue = prop.adaptTo(String.class);
+					if (strValue == null) {
+						strValue = "";
+					}
+				}
+				w.key(property);
+				w.value(strValue);
+			}
+			else {
+				w.key(property);
+				w.value(null);
+			}
+		}
+
+	}
+
+	private String formatValue(Value value) {
+		try {
+			return formatValue(JcrResourceUtil.toJavaObject(value));
+		} catch (RepositoryException re) {
+			// might log
+		}
+		return "";
+	}
+
+	private String formatValue(Object value) {
+		String strValue;
+		if (value instanceof InputStream) {
+			// binary value comes as a LazyInputStream
+			strValue = "[binary]";
+
+			// just to be clean, close the stream
+			try {
+				((InputStream) value).close();
+			} catch (IOException ignore) {
+			}
+		} else if (value != null) {
+			strValue = value.toString();
+		} else {
+			strValue = "";
+		}
+
+		return strValue;
+	}
+	
+	private SlingException wrapException(Exception e) {
+		logger.warn("Error in QueryServlet: " + e.toString(), e);
+		return new SlingException(e.toString(), e);
 	}
 }

@@ -2,6 +2,7 @@ package com.yujingnet.osp.bundle.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.jcr.query.Query;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingException;
@@ -27,6 +29,8 @@ import org.apache.sling.commons.json.io.JSONWriter;
 import org.apache.sling.jcr.resource.JcrResourceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.yujingnet.osp.bundle.service.NodeManagementService;
 
 /**
  * A SlingSafeMethodsServlet that renders the search results as JSON data
@@ -77,6 +81,9 @@ public class JsonPropertiesQueryServlet extends SlingSafeMethodsServlet {
 
 	/** rep:exerpt */
 	private static final String REP_EXCERPT = "rep:excerpt()";
+	
+	@Reference
+    private NodeManagementService nodeManagementService;
 
 	@Override
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse resp) throws IOException {
@@ -106,19 +113,16 @@ public class JsonPropertiesQueryServlet extends SlingSafeMethodsServlet {
 		String queryType = (req.getParameter(QUERY_TYPE) != null && req.getParameter(QUERY_TYPE).equals(Query.SQL))
 				? Query.SQL : Query.XPATH;
 
-		Iterator<Map<String, Object>> result = resolver.queryResources(statement, queryType);
-
+		// which row start to get results
+		long skip = 0;
 		if (req.getParameter(OFFSET) != null) {
-			long skip = Long.parseLong(req.getParameter(OFFSET));
-			while (skip > 0 && result.hasNext()) {
-				result.next();
-				skip--;
-			}
+			skip = Long.parseLong(req.getParameter(OFFSET));
 		}
 
 		resp.setContentType(req.getResponseContentType());
 		resp.setCharacterEncoding("UTF-8");
 
+		// get how many result rows
 		long count = -1;
 		if (req.getParameter(ROWS) != null) {
 			count = Long.parseLong(req.getParameter(ROWS));
@@ -136,14 +140,14 @@ public class JsonPropertiesQueryServlet extends SlingSafeMethodsServlet {
 			exerptPath = req.getParameter(EXCERPT_PATH);
 		}
 
-		replyJson(resp, resolver, result, count, properties, exerptPath);
+		nodeManagementService.getNodeProperties(resp.getWriter(), resolver, statement, queryType, skip, count, properties, exerptPath);
 	}
-
-	private void replyJson(SlingHttpServletResponse resp, ResourceResolver resolver,
+/*
+	private void replyJson(Writer writer, ResourceResolver resolver,
 			Iterator<Map<String, Object>> result, long count, List<String> properties, String exerptPath)
 			throws IOException {
 		try {
-			final JSONWriter w = new JSONWriter(resp.getWriter());
+			final JSONWriter w = new JSONWriter(writer);
 			w.array();
 
 			// iterate through the result set and build the "json result"
@@ -241,13 +245,14 @@ public class JsonPropertiesQueryServlet extends SlingSafeMethodsServlet {
 		return strValue;
 	}
 
-	/**
+	/ **
 	 * @param e
 	 * @throws org.apache.sling.api.SlingException
 	 *             wrapping the given exception
-	 */
+	 * /
 	private SlingException wrapException(Exception e) {
 		log.warn("Error in QueryServlet: " + e.toString(), e);
 		return new SlingException(e.toString(), e);
 	}
+	*/
 }
