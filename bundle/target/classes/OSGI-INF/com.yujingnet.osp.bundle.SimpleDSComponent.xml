@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0" name="com.yujingnet.osp.bundle.SimpleDSComponent">
-    <implementation class="com.yujingnet.osp.bundle.SimpleDSComponent"/>
-    <service servicefactory="false">
-        <provide interface="java.lang.Runnable"/>
-    </service>
-    <property name="scheduler.period" type="Long" value="10"/>
-    <property name="service.pid" value="com.yujingnet.osp.bundle.SimpleDSComponent"/>
-</scr:component>

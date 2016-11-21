@@ -1,0 +1,7 @@
+{
+	"jcr:primaryType": "yj:component",
+	"jcr:title": "testComponentA component",
+	"jcr:content": {
+        "jcr:primaryType" : "nt:unstructured"
+     }
+}

@@ -1,0 +1,4 @@
+<html>
+  <% sling.include(currentNode.getPath(), "replaceSelectors=head"); %>
+  <% sling.include(currentNode.getPath(), "replaceSelectors=body"); %>
+</html>

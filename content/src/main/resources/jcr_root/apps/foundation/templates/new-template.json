@@ -1,0 +1,8 @@
+{
+	"jcr:primaryType": "yj:template",
+	"jcr:title": "default template",
+    "jcr:content": {
+    	"jcr:primaryType": "yj:pageContent",
+    	"sling:resourceType": "yujing/components/page/blogPage"
+    }
+}

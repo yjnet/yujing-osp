@@ -1,0 +1,7 @@
+{
+	"jcr:primaryType": "yj:component",
+	"jcr:title": "Image component",
+	"jcr:content": {
+        "jcr:primaryType" : "nt:unstructured"
+     }
+}

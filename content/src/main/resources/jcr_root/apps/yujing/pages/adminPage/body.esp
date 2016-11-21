@@ -5,20 +5,25 @@
   <script src="/etc/widgets/components/parsys.js"></script>
   <script src="/etc/widgets/components/sidekick.js"></script>
 
+<div>One</div>
+  <p>This is a page with one embedded parsys (apps/yujing/pages/adminPage/body.esp). (currentNode = <%= currentNode.getPath() %>)</p>
+<div>two</div>
 
-  <p>This is a page with one embedded parsys.</p>
-
-
-  <% sling.include(currentNode.getPath() + "/par"); %>
-
-  <% sling.include(currentNode.getPath(), "replaceSelectors=footer"); %>
-
+<%
+try {
+if ( currentNode.hasNode(currentNode.getPath()+"/par") ) {
+  sling.include(currentNode.getPath() + "/par");
+  sling.include(currentNode.getPath(), "replaceSelectors=footer");
+}
+} catch ( e ) { }
+%>
+	<div>three</div>
   <link rel="stylesheet" href="/etc/widgets/components/jquery-ui.css" />
   <link rel="stylesheet" href="/etc/widgets/components/sidekick.css" />
   <link rel="stylesheet" href="/etc/widgets/components/parsys.css" />
   <link rel="stylesheet" href="/etc/widgets/components/themes/default/style.css" />
   
- 
+ <div>five</div>
 
 
 

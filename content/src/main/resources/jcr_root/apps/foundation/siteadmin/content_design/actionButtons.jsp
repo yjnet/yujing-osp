@@ -6,22 +6,53 @@
   <script src="/etc/clientlibs/common/js/jquery-ui-1.11.4.js"></script>
   
   <style>
-	.table    { display: table }
+	.table    { display: table; width: 100%;}
 	.tr       { display: table-row }
 	.thead    { display: table-header-group }
 	.tbody    { display: table-row-group }
 	.tfoot    { display: table-footer-group }
 	.col      { display: table-column }
 	.colgroup { display: table-column-group }
-	.td, .th   { display: table-cell }
+	.td, .th   { display: table-cell}
 	.caption  { display: table-caption }
 	
-	.table-cell {
-		text-weight: bold;
+	div#templates {
 		padding-top: 10px;
-		padding-right: 20px;
+		padding-bottom: 20px;
 	}
 	
+	div.table-cell input {
+		min-width:80px;
+	}
+	
+	div.td.table-cell {
+		padding-top: 2px;
+		padding-right: 2px;
+        padding-left: 3px;  
+        vertical-align: top;
+
+	}
+    
+    
+    div.td.template-thumbnail-cell, div.td.table-cell img {
+        padding: 2px 2px 2px 2px;
+        width: 50px;
+        height: 50px;
+	}
+    
+    div.td div.cell-title {
+        font-weight: bold;
+        font-variant-caps:titling-caps;
+        padding-top: 1px;
+        white-space: nowrap;
+    }
+	
+    div.td div.cell-description {
+        font-weight: normal;
+        font-size: 85%;
+        padding-top: 7px;
+    }
+    
 	div.table-cell input {
 		min-width:80px;
 	}
@@ -34,6 +65,8 @@
   </style>
   
    <script>
+   var $template = 'foundation/components/page/defaul-template';
+   
   $(function() {
 	  var $firstSelectedNode = null;
 	  var $dialogMsg = "";
@@ -70,6 +103,7 @@
     		displayMsg("Please indicate where to create a new page");
     	}else {
     		$("#create-dialog").dialog( "open" );
+    		addtemp();
     	}
     	
     	
@@ -135,11 +169,11 @@
     		qstring += "&jcr:path=" + encodeURIComponent(path);
     	}
     	
-    	qstring += "&sling:resourceType=" + "foundation/components/page/defaul-template";
-    	 
+    	qstring += "&yj:template=" + $template;
+    	// alert('path: ' + navT.path + "/" + path + ".create.node?" + qstring);
     	var jqxhr = $.ajax( navT.path + "/" + path + ".create.node?" + qstring )
     	  .done(function() {
-    	    alert( "success" );
+    	   // alert( "success" );
     	  })
     	  .fail(function() {
     	    alert( "error" );
@@ -152,7 +186,7 @@
     $("#delete-confirm").click(function() {
     	var jqxhr = $.ajax( navT.path + ".delete.node")
 	  	  .done(function() {
-	  	    alert( "success" );
+	  	  //  alert( "success" );
 	  	  })
 	  	  .fail(function() {
 	  	    alert( "error" );
@@ -175,7 +209,7 @@
 	  			$firstSelectedNode = null;
 			}
 	  		
-	  	    alert( "success" );
+	  	   // alert( "success" );
 	  	  })
 	  	  .fail(function() {
 	  	    alert( "error" );
@@ -190,6 +224,15 @@
     });
     
   });
+  
+//  $(document).ready(function() {
+//	  var $elem = $("div#templates div.tr").click(function() {
+//		  alert("click " + $(this).attr("id"));
+//		  $elem.attr("style", "");
+//		  $(this).attr("style", "background-color: yellow;");
+//		  $template = $(this).attr("id");
+//	  });
+//  });
   </script>
 </head>
 <body>
@@ -208,21 +251,23 @@
 					</div>
 				</div>
 				
-				<div class="table">
-					<div class="tr">
-						<div class="td table-cell">
-							<img src="/etc/clientlibs/yujing-osp/ui/img/template-default-thumbnail.png" />
+				<div id="templates" class="table">
+				<!-- 
+					<div class="tr" id="foundation/components/page/defaul-template">
+						<div class="td table-cell template-thumbnail-cell">
+							<img src="/etc/clientlibs/yujing-osp/ui/img/template-default-thumbnail.png"/>
 						</div>
 						<div class="td table-cell">
-							<p class="cell-title">Default template</p>
-							<p>basic template</p>
+							<div class="th cell-title">Default template</div>
+							<div class="cell-description">basic template</div>
 						</div>
-						<div style="clear: both"></div>
 					</div>
+				-->
+					
 				</div>
 			</div>
 		
-			<button id="create-submit">Submit</button>
+			<button id="create-submit">Create</button>
 		</form>
 	</div>
 	
@@ -256,5 +301,92 @@
 <button id="copy">Copy</button>
 <button id="cut">Cut</button>
 <button id="paste">Paste</button>
+
+<script>
+var $templ = jQuery.noConflict();
+
+function valueFromCurrentOrJcrContent(data, name) {
+	   var val = '';
+	   if (data == null || data == 'undefined') {
+		   return val;
+	   }
+	   
+	   val = data[name];
+	   if (val != null && val != 'undefined') {
+		   return val;
+	   }
+
+	   if (data['jcr:content'] != null && typeof data['jcr:content'] == 'object') {
+		   return data['jcr:content'][name];
+	   }
+	   
+	   return val;
+}
+
+ function addtemp() {
+        $templ.ajax( {
+             url : "/content.prop.json?statement=//apps/foundation/" + ((navT.template == null || navT.template == 'undefined')? "themes":"templates") + "/element(*,yj:template)",
+             type: "GET",
+             async: false,
+             success: function(data, textStatus, jqXHR)
+                 {
+            	 var templates = $templ('div#templates');
+            	 templates.empty();
+            	 
+         	 	if (data != undefined && data.length > 0) {
+                      for (var i in data) 
+                      { 
+                    	  var $elem = jQuery('<div/>', { 
+                    		  'class': 'tr', 
+                    		  'id': data[i]['path'] });
+                    
+                      
+	                      var $elem1 = jQuery('<div/>', { 
+	                		  'class': 'td table-cell template-thumbnail-cell'});
+	                	 
+         	 	
+		         	 	 var $img = jQuery('<img/>', { 
+		          		  		'src': '/etc/clientlibs/yujing-osp/ui/img/template-default-thumbnail.png'});
+			          	
+                    	  
+		         	 	var $elem2 = jQuery('<div/>', { 
+	                		  'class': 'td table-cell'});
+		         	 	
+		         	 	var $elem21 = jQuery('<div/>', { 
+	                		  'class': 'th cell-title'});
+		         	 	$elem21.html(data[i]['jcr:title']);
+		         	 	
+		         	 	var $elem22 = jQuery('<div/>', {
+	                		  'class': 'cell-description'});
+		         	 	$elem22.html(data[i]['jcr:description']);
+		         	 
+					        $elem1.append($img);
+					        $elem.append($elem1);
+					                    	 
+					        $elem2.append($elem21);
+					        $elem2.append($elem22);
+					        $elem.append($elem2);
+                    	  templates.append($elem);
+                    	  templates.append('<div style="clear: both"></div>');
+                     	
+                     	// alert(templates.html());
+                      }
+                      
+                      var $elem = $("div#templates div.tr").click(function() {
+                		  $elem.attr("style", "");
+                		  $(this).attr("style", "background-color: yellow;");
+                		  $template = $(this).attr("id");
+                	  });
+         	 	}
+                     
+                 },
+             error: function (jqXHR, textStatus, errorThrown)
+                 {
+                     alert('Error: ' + textStatus + ', jqXHR: ' + jqXHR.responseText );
+                     //$templ("div#tree-menu").html('rendering content menu failed - ' + textStatus);
+		    	    }
+        } );
+ }
+</script>
    
   

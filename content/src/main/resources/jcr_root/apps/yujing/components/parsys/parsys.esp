@@ -1,3 +1,4 @@
+<div>Begin: Par.esp</div>
 <div class='parsys-drop-zone' data-resource-path="<%= resource.getPath() %>">
   <%
     if (resource) {
@@ -17,3 +18,4 @@
   %>
   <div class="parsys-default-drop-zone ui-state-highlight" data-resource-path="default-drop-zone">Drop components here</div>
 </div>
+<div>End: Par.esp</div>

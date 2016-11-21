@@ -1,0 +1,10 @@
+{
+	"jcr:description": "default settting for development testing",
+    "jcr:title": "Testing Template",
+    "jcr:primaryType": "yj:template",
+    "jcr:content": {
+    	"jcr:primaryType": "yj:pageContent",
+    	"sling:resourceSuperType": "foundation/components/page/defaul-template",
+    	"sling:resourceType": "yujing/components/page/defaul-template"
+    }
+}

@@ -56,7 +56,8 @@
 	 //   = "/jcr:root/content//* order by jcr:path";
 	  //    = "/jcr:root/etc//*[ jcr:primaryType = 'sling:Folder' or jcr:primaryType = 'nt:file'] order by jcr:path ";
 	  //    = "/jcr:root/etc//element[(*, nt:file)] order by jcr:path ";
-	  = "/jcr:root/content//element(*, yj:page) order by jcr:path";
+	  //= "/jcr:root/content//element(*, yj:page) order by jcr:path";
+	  = "//content/element(*, yj:page) order by jcr:path";
 	      
 
 	    javax.jcr.query.Query query 

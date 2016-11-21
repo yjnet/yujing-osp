@@ -1,0 +1,9 @@
+{
+	"jcr:description": "Theme Roller UI configuration page",
+    "jcr:title": "Theme Roller UI configuration Template",
+    "jcr:primaryType": "yj:template",
+    "jcr:content": {
+    	"jcr:primaryType": "yj:pageContent",
+    	"sling:resourceType": "yujing/components/page/default-template"
+   } 
+}

@@ -29,7 +29,7 @@
       </div>
   </section>
 
-  <p>This is a page with one embedded parsys.</p>
+  <p>This is a page with one embedded parsys (apps/yujing/page/adminPage/body.esp).</p>
 
 
   <% sling.include(currentNode.getPath() + "/par"); %>

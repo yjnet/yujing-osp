@@ -28,18 +28,11 @@
 <yj = 'http://osp.yujingnet.com/yj'>
 
 [yj:page] > nt:unstructured
-	- title (string)
 
 [yj:pageContent] > nt:unstructured
-	- title (string)
 
 [yj:component] > nt:unstructured
-	- jcr:title (string)
-	- description (string)
 
 [yj:template] > nt:unstructured
-	- title (string)
-	- description (string)
-	- allowedParents (string)
 
 	

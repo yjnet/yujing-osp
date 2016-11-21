@@ -48,10 +48,28 @@ table.table-display tr:nth-child(even) {
 	
     <script>
     	var $prop = jQuery.noConflict();
-    	 
+    	
+    	function valueFromCurrentOrJcrContent(data, name) {
+ 		   var val = '';
+ 		   if (data == null || data == 'undefined') {
+ 			   return val;
+ 		   }
+ 		   
+ 		   val = data[name];
+ 		   if (val != null && val != 'undefined') {
+ 			   return val;
+ 		   }
+
+ 		   if (data['jcr:content'] != null && typeof data['jcr:content'] == 'object') {
+ 			   return data['jcr:content'][name];
+ 		   }
+ 		   
+ 		   return val;
+ 	   }
+    	
          $prop(document).ready(function() {
                 $prop.ajax({
-                     url : "/content.prop.json?statement=//content//*",
+                     url : "/content.prop.json?statement=//content/element(*,yj:page)",
                      type: "GET",
                      async: false,
                      success: function(data, textStatus, jqXHR)
@@ -63,28 +81,40 @@ table.table-display tr:nth-child(even) {
 	                             for (var i in data) 
 	                             { 
 	                             	row = [];
-									row.push(data[i]['name']);
-									row.push(data[i]['jcr:path']);
-									row.push(data[i]['jcr:primaryType']);
-									row.push(data[i]['jcr:score']);
+	                             	row.push(data[i]['name']);
+	                             	row.push(valueFromCurrentOrJcrContent(data[i], 'jcr:title'));
+									row.push(valueFromCurrentOrJcrContent(data[i], 'lastPublished'));
+									row.push(valueFromCurrentOrJcrContent(data[i], 'jcr:lastModified'));
+									row.push(valueFromCurrentOrJcrContent(data[i], 'jcr:lastModifiedBy'));
+									row.push(valueFromCurrentOrJcrContent(data[i], 'status'));
+									row.push(valueFromCurrentOrJcrContent(data[i], 'yj:template'));
+									row.push(valueFromCurrentOrJcrContent(data[i], 'impressions'));
+									row.push(data[i]['path']);
+									row.push(valueFromCurrentOrJcrContent(data[i], 'sling:resourceType'));
 									dataSet.push(row);
 	                             }
-	                             
+	                             $prop('#siteadmin-table').dataTable.ext.errMode = 'none';
 	                             $prop('#siteadmin-table').DataTable( {
 	                                 data: dataSet,
 	                                 columns: [
-	                                     { title: "name" },
-	                                     { title: "jcr:path" },
-	                                     { title: "jcr:primaryType" },
-	                                     { title: "jcr:score" }
-	                                 ]
+                                               { title: "Name" },
+                                               { title: "Title" },
+                                               { title: "Publish" },
+                                               { title: "Modified" },
+                                               { title: "Author" },
+                                               { title: "Status" },
+                                               { title: "Template" },
+                                               { title: "Impressions" },
+                                               { title: "Path" },
+                                               { title: "Type" }
+                                           ]
 	                             } );
                     	 	}
                              
                          },
                      error: function (jqXHR, textStatus, errorThrown)
                          {
-                             alert('error: ' + textStatus + ', jqXHR: ' + jqXHR.toString());
+                             alert('Error: ' + textStatus + ', jqXHR: ' + jqXHR.responseText );
                              //$prop("div#tree-menu").html('rendering content menu failed - ' + textStatus);
  			    	    }
  		          });

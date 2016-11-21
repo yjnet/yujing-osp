@@ -101,12 +101,48 @@ var navT = jQuery(document).ready(function(){
 				    	}
 				    	setActions("#tree-menu-ui-id");
 				    },
-		    error: function (jqXHR, textStatus, errorThrown)
+		    error: function (xhr, textStatus, errorThrown)
 				    {
-		    			alert('error: ' + textStatus);
+		    	if (false && xhr.responseText != "") {
+
+		            var jsonResponseText = $.parseJSON(xhr.responseText);
+		            var jsonResponseStatus = '';
+		            var message = '';
+		            $.each(jsonResponseText, function(name, val) {
+		                if (name == "ResponseStatus") {
+		                    jsonResponseStatus = $.parseJSON(JSON.stringify(val));
+		                     $.each(jsonResponseStatus, function(name2, val2) {
+		                         if (name2 == "Message") {
+		                             message = val2;
+		                         }
+		                     });
+		                }
+		            });
+
+		            alert(message);
+		        }
+		    		alert('error: ' + textStatus + ' - ' + xhr.responseText);
 			    	}
 		});
 		
+	   function valueFromCurrentOrJcrContent(data, name) {
+		   var val = '';
+		   if (data == null || data == 'undefined') {
+			   return val;
+		   }
+		   
+		   val = data[name]
+		   if (val != null && val != 'undefined') {
+			   return val;
+		   }
+		   
+		   if (data['jcr:content'] != null && typeof data['jcr:content'] == 'object') {
+			   return data['jcr:content'][name];
+		   }
+		   
+		   return val;
+	   }
+	   
 		function setActions(element) {
 			$menu(element).treeview();
 			
@@ -115,6 +151,7 @@ var navT = jQuery(document).ready(function(){
 				 $spans.css("background-color", "");
 				 $menu(this).css("background-color", "yellow");
 				 navT.path = $menu(this).parent().attr("name");
+				 navT.template = $menu(this).parent().attr("template");
 				    
 				 url = navT.path + ".html"; 
 				 window.open(url, '_blank');   
@@ -124,8 +161,9 @@ var navT = jQuery(document).ready(function(){
 			    $cols.css("background-color", "");
 			    $menu(this).css("background-color", "yellow");
 			    navT.path = $menu(this).parent().attr("name");
+			    navT.template = $menu(this).parent().attr("template");
 			    
-			    var linkUrl ="/content.prop.json?statement=/" +  navT.path + "//*";
+			    var linkUrl ="/content.prop.json?statement=/" +  navT.path + "/element(*,yj:page)";
 	            $menu.ajax({
 			    url : linkUrl,
 			    type: "GET",
@@ -136,30 +174,43 @@ var navT = jQuery(document).ready(function(){
 				    		
 				    		for (var i in data) 
                                { 
-                               	row = [];
+				    			row = [];
 								row.push(data[i]['name']);
-								row.push(data[i]['jcr:path']);
-								row.push(data[i]['jcr:primaryType']);
-								row.push(data[i]['jcr:score']);
+                               	row.push(valueFromCurrentOrJcrContent(data[i], 'jcr:title'));
+								row.push(valueFromCurrentOrJcrContent(data[i], 'lastPublished'));
+								row.push(valueFromCurrentOrJcrContent(data[i], 'jcr:lastModified'));
+								row.push(valueFromCurrentOrJcrContent(data[i], 'jcr:lastModifiedBy'));
+								row.push(valueFromCurrentOrJcrContent(data[i], 'status'));
+								row.push(valueFromCurrentOrJcrContent(data[i], 'yj:template'));
+								row.push(valueFromCurrentOrJcrContent(data[i], 'impressions'));
+								row.push(data[i]['path']);
+								row.push(valueFromCurrentOrJcrContent(data[i], 'sling:resourceType'));
 								dataSet.push(row);
                               }
 				    		$menu('div.ui-layout-center').html('<table id="siteadmin-table" class="table-display"></table>');
 				    		
 				    		 var table_config = {
                             		   columns: [
-                                                 { title: "name" },
-                                                 { title: "jcr:path" },
-                                                 { title: "jcr:primaryType" },
-                                                 { title: "jcr:score" }
+                                                 { title: "Name" },
+                                                 { title: "Title" },
+                                                 { title: "Publish" },
+                                                 { title: "Modified" },
+                                                 { title: "Author" },
+                                                 { title: "Status" },
+                                                 { title: "Template" },
+                                                 { title: "Impressions" },
+                                                 { title: "Path" },
+                                                 { title: "Type" }
                                              ]
                                };
+				    		 $menu('#siteadmin-table').dataTable.ext.errMode = 'none';
                                var table = $menu('#siteadmin-table').DataTable(table_config);
                                table.clear();
                                table.rows.add(dataSet);
                                table.draw();
 					    	}
 					    	else if (jQuery.type(data) == 'string') {
-					        	alert("string: " + data);
+					        	alert("wrong data format - string: " + data);
 					    	}
 					    	else {
 					    		alert('not support type: ' + jQuery.type(data));
@@ -167,7 +218,7 @@ var navT = jQuery(document).ready(function(){
 					    },
 			    error: function (jqXHR, textStatus, errorThrown)
 					    {
-			    			alert('error: ' + textStatus);
+			    			alert('error: ' + textStatus + ' - ' + jqXHR.responseText);
 				    	}
 				});
 			});
@@ -175,6 +226,7 @@ var navT = jQuery(document).ready(function(){
 	});
 	
 	navT.path = null;
+	navT.template = null;
 
 //	-->
 </script>

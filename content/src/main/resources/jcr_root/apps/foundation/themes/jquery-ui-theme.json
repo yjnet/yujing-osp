@@ -1,0 +1,9 @@
+{
+	"jcr:description": "JQuery UI theme settting",
+    "jcr:title": "Basic JQuery UI Theme",
+    "jcr:primaryType": "yj:template",
+    "jcr:content": {
+    	"jcr:primaryType": "yj:pageContent",
+    	"sling:resourceType": "yujing/components/page/default-template"
+   } 
+}

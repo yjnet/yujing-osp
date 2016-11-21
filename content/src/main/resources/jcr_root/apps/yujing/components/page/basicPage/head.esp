@@ -1,0 +1,3 @@
+<head>
+  <title><%= currentNode.title %></title>
+</head>

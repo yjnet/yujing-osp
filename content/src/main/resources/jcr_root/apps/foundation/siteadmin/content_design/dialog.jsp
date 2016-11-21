@@ -22,7 +22,7 @@
  
 <div id="dialog-form" title="Create new user">
   <p class="validateTips">All form fields are required.</p>
- <script>function try() {alert(navT.path);}</script>
+ <script>function showPath() {alert(navT.path);}</script>
   <form method="POST" action="/content/new-node" enctype="multipart/form-data">
    <span>Title: </span><input type="text" name="title" value="" class="text ui-widget-content ui-corner-all"/>
    <span>Text: </span><input type="text" name="text" value="" class="text ui-widget-content ui-corner-all"/>

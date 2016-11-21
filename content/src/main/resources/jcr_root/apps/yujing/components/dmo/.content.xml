@@ -5,5 +5,4 @@
     allowedParents="*/parsys"
     componentGroup="General"
     jcr:title="demo"
-    yj:primaryType="yj:component"
     jcr:primaryType="yj:component"/>

@@ -4,49 +4,76 @@
         "sling:resourceType" : "yujing/pages/adminPage",
         "par" : {
             "jcr:primaryType": "nt:unstructured",
-            "sling:resourceType" : "yujing/components/parsys"
-        }
-    },
-    "index" : {
-        "jcr:primaryType": "yj:page",
-        "sling:resourceType" : "foundation/siteadmin",
-        "title" : "index siteadmin title"
-    },
-    "demo" : {
-        "jcr:primaryType": "yj:page",
+            "sling:resourceType" : "yujing/components/parsys",
+            "image": {
+            	"jcr:primaryType": "nt:unstructured",
+            	"sling:resourceType" : "yujing/components/image"
+            },
+            "demo": {
+            	"jcr:primaryType": "nt:unstructured",
+            	"sling:resourceType" : "yujing/components/dmo"
+            }
+        },
+        
+        "test-template": {
+        	"jcr:primaryType": "yj:page",
+            "sling:resourceSuperType" : "yujing/components/page/adminPage",
+            "sling:resourceType" : "yujing/components/testComponentA",
+            "jcr:content": {
+	            "sling:resourceType" : "yujing/components/testComponentA",
+	            "sling:resourceSuperType": "foundation/components/page/defaul-template",
+	            "yj:template": "foundation/themes/jquery-ui-theme"
+	         },
+	         
+	         "drag-n-drop" : {
+	         	"jcr:primaryType": "yj:page",
+            	"sling:resourceSuperType" : "yujing/components/page/adminPage",
+            	"sling:resourceType" : "yujing/components/testComponentA",
+            	"jcr:content": {
+		            "sling:resourceType" : "yujing/components/testComponentA",
+		            "sling:resourceSuperType": "foundation/components/page/defaul-template",
+		            "yj:template": "/apps/foundation/templates/yj-default-template"
+		         }
+	         }
+        },
+        
+        "test-component": {
+        		"jcr:primaryType": "yj:page",
+	            "sling:resourceSuperType" : "yujing/components/page/adminPage",
+	            "sling:resourceType" : "yujing/components/testComponentA"
+           }
+    }, 
+    
+    "parsys": {
+    	"jcr:primaryType": "yj:page",
+        "sling:resourceType" : "foundation/components/siteadmin",
+        "sling:resourceSuperType" : "/libs/foundation/components/parsys",
         "jcr:content": {
-        		"jcr:primaryType": "yj:pageContent",
-        		"jcr:created": "2016-05-03T00:10:47.123-05:00",
-        		"sling:resourceType": "foundation/components/page/yj-default-template",
-        		"title" : "demo foundation/demo -- sling:resourceSuperType=foundation/demoSuper",
-        		"par": {
-        				"jcr:primaryType": "nt:unstructured",
-        				"sling:resourceType": "yujing/components/parsys",
-        				"image": {
-		        				"jcr:primaryType": "nt:unstructured",
-		        				"sling:resourceType": "yujing/components/image"
-        				},
-        				"image_1": {
-		        				"jcr:primaryType": "nt:unstructured",
-		        				"sling:resourceType": "yujing/components/image"
-        				}
-        		}
-        		
-        }
+	    	"jcr:primaryType": "yj:pageContent",
+	    	"sling:resourceType": "foundation/components/page/defaul-template",
+	    	"jcr:title": "Testing parsys"
+    	}
     },
-    "demo-super-demo" : {
-        "jcr:primaryType": "yj:page",
-        "sling:resourceType" : "foundation/demoSuper",
-        "title" : "demo foundation/demo -- sling:resourceSuperType=foundation/demoSuper"
+    
+    "siteadmin": {
+    	"jcr:primaryType": "yj:page",
+        "sling:resourceType" : "foundation/siteadmin"
     },
-    "demo-template-demo" : {
-        "jcr:primaryType": "yj:template",
+    
+    "check-query": {
+    	"jcr:primaryType": "yj:page",
         "sling:resourceType" : "foundation",
-        "title" : "demo foundation/demo -- sling:resourceSuperType=foundation/demoSuper"
+        "jcr:title": "Check Query",
+        "jcr:content": {
+	    	"jcr:primaryType": "yj:pageContent",
+	    	"sling:resourceType": "foundation/components/page/defaul-template",
+	    	"jcr:title": "check-query content"
+    	}
     },
-    "lang-test" : {
-        "jcr:primaryType": "yj:page",
-        "sling:resourceType" : "foundation/language",
-        "title" : "test language li18n mapping"
+    
+    "theme": {
+    	"jcr:primaryType": "yj:page",
+        "sling:resourceType": "foundation/themes/jquery-ui-theme",
+        "jcr:title": "Them testing"
     }
 }
